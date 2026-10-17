@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telro-bot"
+version = "1.0.0"
+description = "TELRO — a fast all-in-one Telegram assistant: downloads, music, AI chat and image generation."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "RwinFu" }]
+keywords = ["telegram", "bot", "aiogram", "yt-dlp", "downloader", "ai"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "aiogram==3.31.0",
+    "aiohttp==3.14.5",
+    "aiosqlite==0.22.1",
+    "pydantic-settings==2.16.0",
+    "yt-dlp==2026.8.19",
+    "aiohttp-socks>=0.10.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.1.1",
+    "pytest-asyncio==1.4.0",
+    "ruff==0.17.1",
+]
+
+[project.scripts]
+telro = "bot.main:run"
+
+[tool.setuptools.packages.find]
+include = ["bot*"]
+
+[tool.setuptools.package-data]
+bot = ["locales/*.json"]
+
+[tool.ruff]
+line-length = 118
+target-version = "py311"
+extend-exclude = [".venv", "data", "build", "dist"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC"]
+ignore = [
+    "E501",   # line length is handled by the formatter
+    "UP017",  # datetime.timezone.utc is perfectly fine on 3.11
+    "B007",   # loop variables are used for unpacking in a few places
+    "B904",   # raise ... from is not required in every handler
+    "ASYNC240",  # tiny stat() calls on local files are fine
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["bot"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["bot"]
+omit = ["bot/__main__.py", "bot/main.py"]
