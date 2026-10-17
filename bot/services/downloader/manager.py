@@ -622,9 +622,7 @@ class DownloadManager:
         elif job.status == "failed":
             row = []
             if job.token:
-                retry_data = (
-                    f"pl:{job.token}:first" if job.total_items > 1 else f"q:{job.token}:{job.quality}"
-                )
+                retry_data = f"pl:{job.token}:first" if job.total_items > 1 else f"q:{job.token}:{job.quality}"
                 row.append(
                     InlineKeyboardButton(
                         text=i18n.get(job.lang, "buttons.retry"),

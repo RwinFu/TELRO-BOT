@@ -33,7 +33,9 @@
     "new_image": "🎨 تصویر جدید",
     "again": "🔁 دوباره",
     "new_chat": "🧹 چت جدید",
-    "clear": "🗑 پاک کردن"
+    "clear": "🗑 پاک کردن",
+    "share": "🔗 اشتراک‌گذاری",
+    "open": "🚀 باز کردن در TELRO"
   },
   "commands": {
     "start": "شروع ربات",
@@ -97,7 +99,8 @@
     "kind_video": "ویدیو",
     "kind_audio": "صدا",
     "kind_image": "تصویر",
-    "kind_document": "فایل"
+    "kind_document": "فایل",
+    "share_text": "🎬 با TELRO دانلودش کن — سریع، بدون تبلیغ و با بهترین کیفیت:\n<code>{url}</code>\n\nدکمه‌ی زیر رو بزن یا پیام رو فوروارد کن 👇"
   },
   "music": {
     "title": "🎵 <b>جست‌وجوی موزیک</b>",
@@ -300,14 +303,5 @@
     "copied": "کپی شد",
     "today": "امروز",
     "never": "هرگز"
-  },
-  "inline": {
-    "download_title": "📥 دانلود با TELRO",
-    "download_desc": "دکمه را بزن تا ربات لینک را دانلود کند",
-    "open": "🚀 باز کردن TELRO",
-    "help_title": "🤖 TELRO — دستیار همه‌کاره",
-    "help_desc": "لینک بفرست تا دانلود کنم؛ موزیک، AI و تصویر هم دارم",
-    "help_open": "🚀 شروع",
-    "help_text": "TELRO — دانلود، موزیک، هوش مصنوعی و تصویرسازی در یک ربات.\nhttps://t.me/{username}"
   }
 }

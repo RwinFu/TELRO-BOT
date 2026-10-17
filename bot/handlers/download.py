@@ -6,7 +6,7 @@ import logging
 import re
 
 from aiogram import Bot, F, Router
-from aiogram.filters import Command
+from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, LinkPreviewOptions, Message
 
@@ -14,6 +14,7 @@ from bot.config import Settings
 from bot.constants import PLATFORMS
 from bot.db.repository import Repository, User
 from bot.handlers.common import platform_list
+from bot.handlers.states import ChatStates
 from bot.i18n import i18n
 from bot.keyboards.inline import back_menu, playlist_keyboard, quality_keyboard
 from bot.services.downloader.direct import DirectDownloader, DirectFile
@@ -83,7 +84,12 @@ def _direct_keyboard(lang: str, token: str, file: DirectFile, *, ffmpeg: bool) -
         rows.append(
             [InlineKeyboardButton(text=i18n.get(lang, "download.audio_button"), callback_data=f"q:{token}:audio")]
         )
-    rows.append([InlineKeyboardButton(text=i18n.get(lang, "buttons.cancel"), callback_data="menu:main")])
+    rows.append(
+        [
+            InlineKeyboardButton(text=i18n.get(lang, "buttons.share"), callback_data=f"share:{token}"),
+            InlineKeyboardButton(text=i18n.get(lang, "buttons.cancel"), callback_data="menu:main"),
+        ]
+    )
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -244,9 +250,7 @@ async def begin_download(
                 quota_keyboard(lang),
             )
             return status
-        job = manager.create_job(
-            user, status, media=media, quality=auto, platform=media.platform, title=media.title
-        )
+        job = manager.create_job(user, status, media=media, quality=auto, platform=media.platform, title=media.title)
         manager.start(job)
         return status
 
@@ -276,6 +280,33 @@ async def begin_download(
     )
     await safe_edit(status, text, quality_keyboard(lang, media, token))
     return status
+
+
+@router.callback_query(F.data.startswith("share:"))
+async def cb_share(callback: CallbackQuery, user: User, cfg: Settings, repo: Repository) -> None:
+    """Turn the current card into a forwardable deep link that starts a download."""
+    token = (callback.data or "").split(":", 1)[1]
+    row = await repo.pending_get(token)
+    if row is None or not row["url"]:
+        await answer_callback(callback, i18n.get(user.language, "download.expired"), alert=True)
+        return
+    if not cfg.bot_username:
+        await answer_callback(callback, i18n.get(user.language, "invite.no_username"), alert=True)
+        return
+    if callback.message is None:
+        await answer_callback(callback)
+        return
+    link_token = await repo.deep_link_create(user.id, row["url"])
+    link = f"https://t.me/{cfg.bot_username}?start=dl_{link_token}"
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[[InlineKeyboardButton(text=i18n.get(user.language, "buttons.open"), url=link)]]
+    )
+    await callback.message.answer(
+        i18n.get(user.language, "download.share_text", url=esc(truncate(row["url"], 200))),
+        reply_markup=keyboard,
+        link_preview_options=LinkPreviewOptions(is_disabled=True),
+    )
+    await answer_callback(callback)
 
 
 @router.message(Command("dl", "download"))
@@ -312,7 +343,7 @@ async def cmd_dl(
     )
 
 
-@router.message(F.text.regexp(LINK_HINT))
+@router.message(~StateFilter(ChatStates.ai), F.text.regexp(LINK_HINT))
 async def on_link_message(
     message: Message,
     user: User,

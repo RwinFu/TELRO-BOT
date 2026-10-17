@@ -33,7 +33,9 @@
     "new_image": "🎨 New image",
     "again": "🔁 Again",
     "new_chat": "🧹 New chat",
-    "clear": "🗑 Clear"
+    "clear": "🗑 Clear",
+    "share": "🔗 Share",
+    "open": "🚀 Open in TELRO"
   },
   "commands": {
     "start": "Start the bot",
@@ -97,7 +99,8 @@
     "kind_video": "video",
     "kind_audio": "audio",
     "kind_image": "image",
-    "kind_document": "file"
+    "kind_document": "file",
+    "share_text": "🎬 Download it with TELRO — fast, ad-free and in the best quality:\n<code>{url}</code>\n\nTap the button below or forward this message 👇"
   },
   "music": {
     "title": "🎵 <b>Music search</b>",
@@ -300,14 +303,5 @@
     "copied": "Copied",
     "today": "Today",
     "never": "Never"
-  },
-  "inline": {
-    "download_title": "📥 Download with TELRO",
-    "download_desc": "Tap the button and the bot will download this link",
-    "open": "🚀 Open TELRO",
-    "help_title": "🤖 TELRO — all-in-one assistant",
-    "help_desc": "Send a link to download; music, AI and images too",
-    "help_open": "🚀 Start",
-    "help_text": "TELRO — downloads, music, AI and image generation in one bot.\nhttps://t.me/{username}"
   }
 }

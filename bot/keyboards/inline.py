@@ -56,7 +56,12 @@ def quality_keyboard(lang: str, media: MediaInfo, token: str) -> InlineKeyboardM
     audio = next((option for option in media.qualities if option.is_audio), None)
     if audio is not None:
         rows.append([_button(audio.button_text, f"q:{token}:audio")])
-    rows.append([_button(i18n.get(lang, "buttons.cancel"), "menu:main")])
+    rows.append(
+        [
+            _button(i18n.get(lang, "buttons.share"), f"share:{token}"),
+            _button(i18n.get(lang, "buttons.cancel"), "menu:main"),
+        ]
+    )
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -66,7 +71,10 @@ def playlist_keyboard(lang: str, token: str, count: int) -> InlineKeyboardMarkup
         inline_keyboard=[
             [_button(i18n.get(lang, "download.playlist_first"), f"pl:{token}:first")],
             [_button(i18n.get(lang, "download.playlist_all", count=limit), f"pl:{token}:all")],
-            [_button(i18n.get(lang, "buttons.cancel"), "menu:main")],
+            [
+                _button(i18n.get(lang, "buttons.share"), f"share:{token}"),
+                _button(i18n.get(lang, "buttons.cancel"), "menu:main"),
+            ],
         ]
     )
 
