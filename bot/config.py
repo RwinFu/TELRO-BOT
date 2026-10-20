@@ -6,7 +6,7 @@ import shutil
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import SecretStr, field_validator
+from pydantic import AliasChoices, Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,7 +32,12 @@ class Settings(BaseSettings):
     bot_username: str = "Rwinro_bot"
     owner_ids: str = ""
     admin_ids: str = ""
-    api_server: str = ""
+    # Documented as TELEGRAM_API_SERVER (README, docs/deploy.md, docker-compose);
+    # API_SERVER kept as a short alias.
+    api_server: str = Field(
+        default="",
+        validation_alias=AliasChoices("TELEGRAM_API_SERVER", "API_SERVER"),
+    )
     proxy: str = ""
 
     # --- Storage ----------------------------------------------------------

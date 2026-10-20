@@ -86,7 +86,7 @@ async def main() -> None:
     if not cfg.ffmpeg_available:
         log.warning("ffmpeg not found: merging, MP3 conversion and compression are disabled.")
     if not cfg.deno_available:
-        log.warning("Deno not found: YouTube may throttle or require a JS runtime. See docs/DEPLOY.md.")
+        log.warning("Deno not found: YouTube may throttle or require a JS runtime. See docs/deploy.md.")
     if not cfg.ai_api_key.get_secret_value().strip():
         log.warning("AI_API_KEY is empty: using the free Pollinations-compatible endpoint (may be rate-limited).")
     if cfg.image_provider.lower() == "openai" and not cfg.image_api_key.get_secret_value().strip():
