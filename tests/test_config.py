@@ -21,6 +21,28 @@ def test_defaults_and_upload_limit(tmp_path: Path):
     assert custom.upload_limit == 1500 * 1024 * 1024
 
 
+def test_api_server_env_aliases(monkeypatch, tmp_path: Path):
+    # The documented name is TELEGRAM_API_SERVER (README, deploy docs, compose);
+    # API_SERVER remains accepted as a short alias.
+    monkeypatch.delenv("TELEGRAM_API_SERVER", raising=False)
+    monkeypatch.delenv("API_SERVER", raising=False)
+
+    monkeypatch.setenv("TELEGRAM_API_SERVER", "http://127.0.0.1:8081")
+    documented = Settings(_env_file=None, bot_token="1:T", data_dir=tmp_path)
+    assert documented.api_server == "http://127.0.0.1:8081"
+    assert documented.use_local_api
+
+    monkeypatch.delenv("TELEGRAM_API_SERVER")
+    monkeypatch.setenv("API_SERVER", "http://127.0.0.1:9000")
+    aliased = Settings(_env_file=None, bot_token="1:T", data_dir=tmp_path)
+    assert aliased.api_server == "http://127.0.0.1:9000"
+    assert aliased.use_local_api
+
+    monkeypatch.delenv("API_SERVER")
+    disabled = Settings(_env_file=None, bot_token="1:T", data_dir=tmp_path)
+    assert not disabled.use_local_api
+
+
 def test_admin_and_channel_parsing(tmp_path: Path):
     cfg = Settings(
         _env_file=None,
